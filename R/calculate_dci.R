@@ -121,7 +121,7 @@ calculate_dci <- function(net, form, pass = NULL, weight = NULL, threshold = NUL
     seg_weights$segweight <- seg_weights$segweight / totweight
 
     # Potamodromous case
-    if(form == "potamodromous") DCIs <- calculate_dci_pot(all_members, net_nodes, seg_weights, n.cores)
+    if(form == "potamodromous") DCIs <- calculate_dci_pot(all_members, net_nodes, seg_weights, n.cores = n.cores)
 
     # Diadromous case
     if(form == "diadromous"){
@@ -132,13 +132,13 @@ calculate_dci <- function(net, form, pass = NULL, weight = NULL, threshold = NUL
         dplyr::pull(.data$member.label)
 
       # Calculate DCI
-      DCIs <- calculate_dci_dia(all_members, net_nodes, seg_weights, outlet_seg, n.cores)
+      DCIs <- calculate_dci_dia(all_members, net_nodes, seg_weights, outlet_seg, n.cores = n.cores)
     }
 
     # Both DCI forms
     if(form == "all"){
-      DCIs_pot <- calculate_dci_pot(all_members, net_nodes, seg_weights)
-      DCIs_dia <- calculate_dci_dia(all_members, net_nodes, seg_weights)
+      DCIs_pot <- calculate_dci_pot(all_members, net_nodes, seg_weights, n.cores = n.cores)
+      DCIs_dia <- calculate_dci_dia(all_members, net_nodes, seg_weights, n.cores = n.cores)
       DCIs <- DCIs_pot %>%
         dplyr::left_join(.data, DCIs_dia, by = "segment", suffix = c("_pot", "_dia"))
     }
@@ -155,7 +155,7 @@ calculate_dci <- function(net, form, pass = NULL, weight = NULL, threshold = NUL
     if(!is.null(weight)) weighted <- TRUE
 
     # Potamodromous case
-    if(form == "potamodromous") DCIs <- calculate_dci_pot_thresh(net, all_members, net_nodes, seg_weights, weighted, threshold, totweight)
+    if(form == "potamodromous") DCIs <- calculate_dci_pot_thresh(net, all_members, net_nodes, seg_weights, weighted, threshold, totweight, n.cores = n.cores)
 
     # Diadromous case
     if(form == "diadromous"){
@@ -166,7 +166,7 @@ calculate_dci <- function(net, form, pass = NULL, weight = NULL, threshold = NUL
         dplyr::pull(.data$member.label)
 
       # Calculate DCI
-      DCIs <- calculate_dci_dia_thresh(net, all_members, net_nodes, seg_weights, weighted, threshold, totweight, outlet_seg)
+      DCIs <- calculate_dci_dia_thresh(net, all_members, net_nodes, seg_weights, weighted, threshold, totweight, outlet_seg, n.cores = n.cores)
     }
 
     # Return calculated DCI values

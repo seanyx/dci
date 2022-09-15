@@ -35,7 +35,10 @@ split_rivers_at_points <- function(rivers, pts, tolerance = NULL){
     }
 
     # Place points on rivers
-    riv_pts <- sf::st_sf(sf::st_line_sample(rivers[riv_ind,], density = 1/1))
+    riv_len1 = rivers[riv_ind,] %>% st_length %>% as.numeric()
+    density = ifelse(riv_len1 > 10000, 1/1000, 10/riv_len1)
+
+    riv_pts <- sf::st_sf(sf::st_line_sample(rivers[riv_ind,], density = density))
     riv_pts <- tryCatch({
       sf::st_cast(riv_pts, "POINT") %>%
         dplyr::mutate(group = 1)
